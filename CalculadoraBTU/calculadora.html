@@ -1,0 +1,353 @@
+<!--
+Falta aplicar o css, popular as variaveis com os valores corretos.
+Segue exemplo de inicialização da calculadora:
+
+var valores = [{
+    exposicao: 'Manhã',
+    btuArea: 750,
+    btuPessoas: 350,
+    btuEletronicos: 350,
+    btuJanelas: 350
+}, {
+    exposicao: 'Tarde',
+    btuArea: 850,
+    btuPessoas: 420,
+    btuEletronicos: 420,
+    btuJanelas: 420
+}];
+var CategoriasBTU = [{
+    deBTU: 0,
+    ateBTU: 10000,
+	titulo: 'Categoria A',
+	descricao: 'Teste 123',
+    linkCategoria: '',
+	srcImagem:'',
+    widthImagem: 350,
+	heightImagem:350
+}, {
+    deBTU: 0,
+    ateBTU: 10000,
+	titulo: 'Categoria B',
+	descricao: '',
+    linkCategoria: '',
+	srcImagem:'',
+    widthImagem: 350,
+	heightImagem:350
+}];
+var modalTextoHeader = 'Texto Header';
+var modalInformacao = 'Informações diversas.'
+Fbits.Componentes.CalculadoraBTU.init(valores,CategoriasBTU,modalTextoHeader,modalInformacao);
+-->
+<head>
+<meta charset="utf-8">
+	<script src="http://code.jquery.com/jquery-2.2.0.min.js" ></script>
+	<script src="http://fancyapps.com/fancybox/source/jquery.fancybox.js" ></script>
+	<script src="http://fancyapps.com/fancybox/source/helpers/jquery.fancybox-thumbs.js"></script>
+	<link rel="stylesheet" type="text/css" href="http://fancyapps.com/fancybox/source/jquery.fancybox.css">
+	<link rel="stylesheet" type="text/css" href="http://fancyapps.com/fancybox/source/helpers/jquery.fancybox-thumbs.css">
+	
+</head>
+<body>
+ 
+</body>
+<script>
+var Fbits = Fbits || {};//Namespace Fbits
+Fbits.Componentes = Fbits.Componentes || {};
+Fbits.Componentes.CalculadoraBTU = {
+    _queryGenerica: '.calculadoraBTU .[classe] input',
+    retornaValor: function(nomeClasse) {
+        var $elemento = $(Fbits.Componentes.CalculadoraBTU._queryGenerica.replace('[classe]', nomeClasse));
+        if ($elemento.hasClass('metro')) {
+            return $elemento.val().replace('m', '');
+        } else {
+            return $elemento.val();
+        }
+    },
+    _valoresexposicaoBTU: [],
+	_valoresCategoriasBTU: [],
+	_modalTextoHeader: '',
+	_modalInformacao: '',
+	
+    init: function(valoresexposicaoBTU,valoresCategoriasBTU,modalTextoHeader,modalInformacao) {
+		
+		_modalTextoHeader = modalTextoHeader;
+		_modalInformacao = modalInformacao;
+        if (valoresexposicaoBTU && valoresCategoriasBTU) {
+			Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU= valoresCategoriasBTU;
+            Fbits.Componentes.CalculadoraBTU._valoresexposicaoBTU = valoresexposicaoBTU;
+            $('body').append(Fbits.Componentes.CalculadoraBTU.htmlCalculadora());
+            Fbits.Componentes.CalculadoraBTU.triggerFuncoes();
+        }
+    },
+    calcular: function() {
+        var obj;
+        for (var i in Fbits.Componentes.CalculadoraBTU._valoresexposicaoBTU) {
+            if (Fbits.Componentes.CalculadoraBTU._valoresexposicaoBTU[i].exposicao == Fbits.Componentes.CalculadoraBTU.retornaValor('exposicao')) {
+                obj = Fbits.Componentes.CalculadoraBTU._valoresexposicaoBTU[i];
+                break;
+            }
+        }
+        if (obj) {
+            var comprimento = parseInt(Fbits.Componentes.CalculadoraBTU.retornaValor('comprimento'));
+            var largura = parseInt(Fbits.Componentes.CalculadoraBTU.retornaValor('largura'));
+            var qtdPessoas = parseInt(Fbits.Componentes.CalculadoraBTU.retornaValor('pessoas'));
+            var qtdEletronicos = parseInt(Fbits.Componentes.CalculadoraBTU.retornaValor('eletronicos'));
+            var qtdJanelas = parseInt(Fbits.Componentes.CalculadoraBTU.retornaValor('janelas'));
+			
+			//Nenhuma quantidade pode ser 0
+			comprimento = comprimento ==0? 1 : comprimento;
+			largura = largura == 0 ? 1 : largura;
+			qtdPessoas = qtdPessoas ==0? 1 : qtdPessoas;
+			qtdEletronicos = qtdEletronicos == 0 ? 1 : qtdEletronicos;
+			qtdJanelas = qtdJanelas ==0 ? 1 : qtdJanelas;
+			
+            var subTotalArea = Fbits.Componentes.CalculadoraBTU.calculaSubTotalArea(comprimento, largura, obj.btuArea);
+            var subTotalPessoas = Fbits.Componentes.CalculadoraBTU.calculaSubTotalPessoas(qtdPessoas, obj.btuPessoas);
+            var subTotalEletronicos = Fbits.Componentes.CalculadoraBTU.calculaSubTotalEletronicos(qtdEletronicos, obj.btuEletronicos);
+            var subTotalJanelas = Fbits.Componentes.CalculadoraBTU.calculaSubTotalJanelas(qtdJanelas, obj.btuJanelas);
+            var total = subTotalArea + subTotalPessoas + subTotalEletronicos + subTotalJanelas;
+
+			var htmlModal = Fbits.Componentes.CalculadoraBTU.htmlModal(total);
+			$.fancybox({
+				'content': htmlModal
+			});
+        }
+    },
+    calculaSubTotalArea: function(comprimento, largura, incidenciaBTU) {
+        return (comprimento * largura) * incidenciaBTU;
+    },
+    calculaSubTotalPessoas: function(qtdPessoas, incidenciaBTU) {
+        return qtdPessoas * incidenciaBTU;
+    },
+    calculaSubTotalEletronicos: function(qtdEletronicos, incidenciaBTU) {
+        return qtdEletronicos * incidenciaBTU;
+    },
+    calculaSubTotalJanelas: function(qtdJanelas, incidenciaBTU) {
+        return qtdJanelas * incidenciaBTU;
+    },
+    htmlCalculadora: function() {
+        return '<div class="calculadoraBTU"><div class="calculadoraBTUHeader"><div class="calculadoraBTULogo"></div><div class="calculadoraBTUTitulo"></div></div><div class="calculadoraBTUBody"><div class="linha"><div class="item comprimento"><div class="itemNome">Comprimento</div><div class="itemIcone"></div><div class="itemInput"><input readonly value="1m" type="text" class="itemInput metro"/></div><div class="itemSeta mais"><div class="itemSetaCima"></div></div><div class="itemSeta menos"><div class="itemSetaBaixo"></div></div></div><div class="item largura"><div class="itemNome">Largura</div><div class="itemIcone"></div><div class="itemInput"><input readonly value="1m" type="text" class="itemInput metro"/></div><div class="itemSeta mais"><div class="itemSetaCima"></div></div><div class="itemSeta menos"><div class="itemSetaBaixo"></div></div></div><div class="item eletronicos"><div class="itemNome">Eletrônicos</div><div class="itemIcone"></div><div class="itemInput"><input readonly value="0" type="text" class="itemInput"/></div><div class="itemSeta mais"><div class="itemSetaCima"></div></div><div class="itemSeta menos"><div class="itemSetaBaixo"></div></div></div></div><div class="linha"><div class="item pessoas"><div class="itemNome">Pessoas</div><div class="itemIcone"></div><div class="itemInput"><input readonly value="0" type="text" class="itemInput"/></div><div class="itemSeta mais"><div class="itemSetaCima"></div></div><div class="itemSeta menos"><div class="itemSetaBaixo"></div></div></div><div class="item janelas"><div class="itemNome">Janelas</div><div class="itemIcone"></div><div class="itemInput"><input readonly value="0" type="text" class="itemInput"/></div><div class="itemSeta mais"><div class="itemSetaCima"></div></div><div class="itemSeta menos"><div class="itemSetaBaixo"></div></div></div><div class="item exposicao"><div class="itemNome">Exposição ao Sol</div><div class="itemIcone"></div><div class="itemInput"><input readonly value="Manhã" type="text" class="itemInput dia"/></div><div class="itemSeta mais"><div class="itemSetaCima"></div></div><div class="itemSeta menos"><div class="itemSetaBaixo"></div></div></div></div></div><div class="calculadoraBTUFooter"><div class="buttonCalcular">Calcular</div></div></div>';
+    },
+	htmlModal: function(totalBTU){
+	
+		var htmlModal = '<div class="modalCalculadora">'+
+		'<div class="modalTextoHeader"><span>'+_modalTextoHeader+'</span></div>'+
+		'<div class="modalAreaResultado"><div class="modalResultadoBTU">'+(totalBTU)+' BTUs'+'</div></div>'+
+		'<div class="modalInformacao">'+_modalInformacao+'</div>'+
+		'<div class="modalAreaSpot">';
+		for(var i in Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU){
+			if(Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].deBTU <= totalBTU && Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].ateBTU >=totalBTU){
+				htmlModal=htmlModal+'<div class="calculadoraSpot">'+
+					'<a href="'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].linkCategoria+'">'+
+						'<div class="spotImagem">'+
+							'<img width="'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].widthImagem+'" height="'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].heightImagem+'" />'+
+						'</div>'+
+						'<div class="spotTitulo">'+
+							'<span>'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].titulo+'</span>'+
+						'</div>'+
+						'<div class="spotDescricao">'+
+							'<span>'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].descricao+'</span>'+
+						'</div>'+
+					'</a>'+
+					'<div>'+
+						'<a href="'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].linkCategoria+'"><div>Ver produtos</div></a>'+
+					'</div>'+
+				'</div>';
+			}
+		}
+		htmlModal=htmlModal+'</div></div>';
+		return htmlModal;
+	},
+    triggerFuncoes: function() {
+        $('.calculadoraBTU .buttonCalcular').click(function() {
+            Fbits.Componentes.CalculadoraBTU.calcular();
+        })
+        Fbits.Componentes.CalculadoraBTU.triggerAumentar();
+        Fbits.Componentes.CalculadoraBTU.triggerDiminuir();
+    },
+    triggerAumentar: function() {
+        $('.calculadoraBTU .mais').click(function() {
+            var $input = $(this).parent().find('input');
+            if ($input.hasClass('metro')) {
+                $input.val((parseInt($input.val().replace('m', '')) + 1) + 'm');
+            } else if ($input.hasClass('dia')) {
+                if ($input.val() == 'Manhã') {
+                    $input.val('Tarde');
+                } else {
+                    $input.val('Manhã');
+                }
+            } else {
+                $input.val(parseInt($input.val()) + 1);
+            }
+        })
+    },
+    triggerDiminuir: function() {
+        $('.calculadoraBTU .menos').click(function() {
+            var $input = $(this).parent().find('input');
+            if ($input.hasClass('metro')) {
+                var valor = parseInt($input.val().replace('m', '')) - 1;
+                valor = valor >= 0 ? valor : 0;
+                $input.val(valor + 'm');
+            } else if ($input.hasClass('dia')) {
+                if ($input.val() == 'Manhã') {
+                    $input.val('Tarde');
+                } else {
+                    $input.val('Manhã');
+                }
+            } else {
+                var valor = parseInt($input.val()) - 1;
+                valor = valor >= 0 ? valor : 0;
+                $input.val(valor);
+            }
+        })
+    }
+
+};
+var valores = [{
+    exposicao: 'Manhã',
+    btuArea: 750,
+    btuPessoas: 350,
+    btuEletronicos: 350,
+    btuJanelas: 350
+}, {
+    exposicao: 'Tarde',
+    btuArea: 850,
+    btuPessoas: 420,
+    btuEletronicos: 420,
+    btuJanelas: 420
+}];
+var CategoriasBTU = [{
+    deBTU: 0,
+    ateBTU: 10000,
+	titulo: 'Categoria A',
+	descricao: 'Teste 123',
+    linkCategoria: '',
+	srcImagem:'',
+    widthImagem: 350,
+	heightImagem:350
+}, {
+    deBTU: 0,
+    ateBTU: 10000,
+	titulo: 'Categoria B',
+	descricao: '',
+    linkCategoria: '',
+	srcImagem:'',
+    widthImagem: 350,
+	heightImagem:350
+}];
+var modalTextoHeader = 'Texto Header';
+var modalInformacao = 'Informações diversas.'
+Fbits.Componentes.CalculadoraBTU.init(valores,CategoriasBTU,modalTextoHeader,modalInformacao);
+</script>
+<style>
+.calculadoraBTU {
+    width: 375px;
+    background: darkturquoise;
+    height: 302px;
+	border-radius: 5px;
+}
+.calculadoraBTU input.itemInput {
+    border-radius: 6px;
+    border: 0;
+    text-align: center;
+}
+.calculadoraBTU .calculadoraBTUBody {
+	padding: 10px;
+    float: left;
+}
+.calculadoraBTU .calculadoraBTUHeader {
+    height: 65px;
+    background: blue;
+	border-radius: 5px 5px 0 0;
+}
+.calculadoraBTU .linha {
+    float: left;
+    margin-top: 19px;
+}
+.calculadoraBTU .item {
+    float: left;
+    width: 95px;
+    height: 43px;
+    margin-left: 18px;
+}
+.calculadoraBTU .itemNome {
+    font-size: 13px;
+    color: white;
+}
+.calculadoraBTU .itemIcone {
+    width: 28px;
+    height: 23px;
+    float: left;
+    background: red;
+    margin-right: 3px;
+}
+.calculadoraBTU .itemSeta {
+    width: 18px;
+    height: 10px;
+    background: blanchedalmond;
+    float: left;
+    margin-bottom: 2px;
+    margin-left: 1px;
+    border-radius: 2px;
+    cursor: pointer;
+}
+.calculadoraBTU .itemInput {
+    width: 43px;
+    height: 23px;
+    float: left;
+}
+.calculadoraBTU .itemSetaCima:before {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 3.5px;
+    margin-top: 2px;
+    width: 0px;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid black;
+}
+.calculadoraBTU .itemSetaBaixo:before {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 4px;
+    margin-top: 3px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid black;
+}
+.calculadoraBTU .calculadoraBTUFooter {
+    float: left;
+    display: inline-block;
+    width: 100%;
+	margin-top: 11px;
+}
+.calculadoraBTU .buttonCalcular {
+    width: 243px;
+    height: 50px;
+    background: green;
+    float: left;
+    margin-top: 7px;
+    margin-left: 65px;
+    text-align: center;
+    line-height: 46px;
+    font-size: 28px;
+    border-radius: 5px;
+    color: white;
+	cursor: pointer;
+}
+.calculadoraBTU .exposicao .itemInput {
+    width: 53px;
+}
+.calculadoraBTU .item.exposicao {
+    width: 103px;
+    margin-left: 8px;
+}
+.calculadoraBTU input.itemInput {
+    color: green;
+}
+</style>
