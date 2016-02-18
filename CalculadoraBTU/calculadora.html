@@ -1,6 +1,5 @@
 <!--
-Falta aplicar o css, popular as variaveis com os valores corretos.
-Segue exemplo de inicialização da calculadora:
+Exemplo de inicialização da calculadora:
 
 var valores = [{
     exposicao: 'Manhã',
@@ -17,27 +16,46 @@ var valores = [{
 }];
 var CategoriasBTU = [{
     deBTU: 0,
-    ateBTU: 10000,
-	titulo: 'Categoria A',
-	descricao: 'Teste 123',
-    linkCategoria: '',
-	srcImagem:'',
-    widthImagem: 350,
-	heightImagem:350
+    ateBTU: 30000,
+	titulo: 'Split Hiwall',
+	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
+    linkCategoria: 'http://padrao.plataforma.local/motocross',
+	srcImagem:'http://recursos.padrao.plataforma.local/MediaCenter/defaultVideoTN.jpg'
 }, {
     deBTU: 0,
-    ateBTU: 10000,
-	titulo: 'Categoria B',
-	descricao: '',
-    linkCategoria: '',
-	srcImagem:'',
-    widthImagem: 350,
-	heightImagem:350
+    ateBTU: 30000,
+	titulo: 'Janela',
+	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
+    linkCategoria: 'http://padrao.plataforma.local/motocross',
+	srcImagem:'http://recursos.padrao.plataforma.local/MediaCenter/defaultVideoTN.jpg'
+}, {
+    deBTU: 0,
+    ateBTU: 12000,
+	titulo: 'Portatil',
+	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
+    linkCategoria: 'http://padrao.plataforma.local/motocross',
+	srcImagem:'http://recursos.padrao.plataforma.local/MediaCenter/defaultVideoTN.jpg'
+}, {
+    deBTU: 18001,
+    ateBTU: 80000,
+	titulo: 'Piso Teto',
+	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
+    linkCategoria: 'http://padrao.plataforma.local/motocross',
+	srcImagem:'http://recursos.padrao.plataforma.local/MediaCenter/defaultVideoTN.jpg'
+}, {
+    deBTU: 18001,
+    ateBTU: 80000,
+	titulo: 'Cassete',
+	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
+    linkCategoria: 'http://padrao.plataforma.local/motocross',
+	srcImagem:'http://recursos.padrao.plataforma.local/MediaCenter/defaultVideoTN.jpg'
 }];
-var modalTextoHeader = 'Texto Header';
-var modalInformacao = 'Informações diversas.'
-Fbits.Componentes.CalculadoraBTU.init(valores,CategoriasBTU,modalTextoHeader,modalInformacao);
+var modalTextoHeader = 'A potencia ideal para climatizar seu ambiente é:';
+var modalInformacao = 'Cálculo aproximado, podendo haver variações; Em caso de dúvidas, entre em contato com nossos consultores no 0800 400 60 66';
+var modalMensagemEscolha = 'Escolha abaixo, o modelo de sua preferência:'
+Fbits.Componentes.CalculadoraBTU.init(valores,CategoriasBTU,modalTextoHeader,modalInformacao,modalMensagemEscolha);
 -->
+<html>
 <head>
 <meta charset="utf-8">
 	<script src="http://code.jquery.com/jquery-2.2.0.min.js" ></script>
@@ -48,7 +66,7 @@ Fbits.Componentes.CalculadoraBTU.init(valores,CategoriasBTU,modalTextoHeader,mod
 	
 </head>
 <body>
- 
+ <div class="div-calculadora-btus"></div>
 </body>
 <script>
 var Fbits = Fbits || {};//Namespace Fbits
@@ -67,15 +85,17 @@ Fbits.Componentes.CalculadoraBTU = {
 	_valoresCategoriasBTU: [],
 	_modalTextoHeader: '',
 	_modalInformacao: '',
+	_modalMensagemEscolha: '',
 	
-    init: function(valoresexposicaoBTU,valoresCategoriasBTU,modalTextoHeader,modalInformacao) {
+    init: function(valoresexposicaoBTU,valoresCategoriasBTU,modalTextoHeader,modalInformacao,modalMensagemEscolha) {
 		
 		_modalTextoHeader = modalTextoHeader;
 		_modalInformacao = modalInformacao;
+		_modalMensagemEscolha = modalMensagemEscolha;
         if (valoresexposicaoBTU && valoresCategoriasBTU) {
 			Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU= valoresCategoriasBTU;
             Fbits.Componentes.CalculadoraBTU._valoresexposicaoBTU = valoresexposicaoBTU;
-            $('body').append(Fbits.Componentes.CalculadoraBTU.htmlCalculadora());
+            $('.div-calculadora-btus').append(Fbits.Componentes.CalculadoraBTU.htmlCalculadora());
             Fbits.Componentes.CalculadoraBTU.triggerFuncoes();
         }
     },
@@ -134,13 +154,14 @@ Fbits.Componentes.CalculadoraBTU = {
 		'<div class="modalTextoHeader"><span>'+_modalTextoHeader+'</span></div>'+
 		'<div class="modalAreaResultado"><div class="modalResultadoBTU">'+(totalBTU)+' BTUs'+'</div></div>'+
 		'<div class="modalInformacao">'+_modalInformacao+'</div>'+
+		'<div class="modalMensagemEscolha">'+_modalMensagemEscolha+'</div>'+
 		'<div class="modalAreaSpot">';
 		for(var i in Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU){
 			if(Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].deBTU <= totalBTU && Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].ateBTU >=totalBTU){
 				htmlModal=htmlModal+'<div class="calculadoraSpot">'+
 					'<a href="'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].linkCategoria+'">'+
 						'<div class="spotImagem">'+
-							'<img width="'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].widthImagem+'" height="'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].heightImagem+'" />'+
+							'<img src="'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].srcImagem+'" />'+
 						'</div>'+
 						'<div class="spotTitulo">'+
 							'<span>'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].titulo+'</span>'+
@@ -218,26 +239,44 @@ var valores = [{
 }];
 var CategoriasBTU = [{
     deBTU: 0,
-    ateBTU: 10000,
-	titulo: 'Categoria A',
-	descricao: 'Teste 123',
-    linkCategoria: '',
-	srcImagem:'',
-    widthImagem: 350,
-	heightImagem:350
+    ateBTU: 30000,
+	titulo: 'Split Hiwall',
+	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
+    linkCategoria: 'http://padrao.plataforma.local/motocross',
+	srcImagem:'http://recursos.padrao.plataforma.local/MediaCenter/defaultVideoTN.jpg'
 }, {
     deBTU: 0,
-    ateBTU: 10000,
-	titulo: 'Categoria B',
-	descricao: '',
-    linkCategoria: '',
-	srcImagem:'',
-    widthImagem: 350,
-	heightImagem:350
+    ateBTU: 30000,
+	titulo: 'Janela',
+	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
+    linkCategoria: 'http://padrao.plataforma.local/motocross',
+	srcImagem:'http://recursos.padrao.plataforma.local/MediaCenter/defaultVideoTN.jpg'
+}, {
+    deBTU: 0,
+    ateBTU: 12000,
+	titulo: 'Portatil',
+	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
+    linkCategoria: 'http://padrao.plataforma.local/motocross',
+	srcImagem:'http://recursos.padrao.plataforma.local/MediaCenter/defaultVideoTN.jpg'
+}, {
+    deBTU: 18001,
+    ateBTU: 80000,
+	titulo: 'Piso Teto',
+	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
+    linkCategoria: 'http://padrao.plataforma.local/motocross',
+	srcImagem:'http://recursos.padrao.plataforma.local/MediaCenter/defaultVideoTN.jpg'
+}, {
+    deBTU: 18001,
+    ateBTU: 80000,
+	titulo: 'Cassete',
+	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
+    linkCategoria: 'http://padrao.plataforma.local/motocross',
+	srcImagem:'http://recursos.padrao.plataforma.local/MediaCenter/defaultVideoTN.jpg'
 }];
-var modalTextoHeader = 'Texto Header';
-var modalInformacao = 'Informações diversas.'
-Fbits.Componentes.CalculadoraBTU.init(valores,CategoriasBTU,modalTextoHeader,modalInformacao);
+var modalTextoHeader = 'A potencia ideal para climatizar seu ambiente é:';
+var modalInformacao = 'Cálculo aproximado, podendo haver variações; Em caso de dúvidas, entre em contato com nossos consultores no 0800 400 60 66';
+var modalMensagemEscolha = 'Escolha abaixo, o modelo de sua preferência:'
+Fbits.Componentes.CalculadoraBTU.init(valores,CategoriasBTU,modalTextoHeader,modalInformacao,modalMensagemEscolha);
 </script>
 <style>
 .calculadoraBTU {
@@ -300,8 +339,8 @@ Fbits.Componentes.CalculadoraBTU.init(valores,CategoriasBTU,modalTextoHeader,mod
     content: "";
     display: inline-block;
     vertical-align: middle;
-    margin-left: 3.5px;
-    margin-top: 2px;
+    margin-left: 4.5px;
+    margin-bottom: 6px;
     width: 0px;
     height: 0;
     border-left: 5px solid transparent;
@@ -313,7 +352,7 @@ Fbits.Componentes.CalculadoraBTU.init(valores,CategoriasBTU,modalTextoHeader,mod
     display: inline-block;
     vertical-align: middle;
     margin-left: 4px;
-    margin-top: 3px;
+    margin-bottom: 4px;
     width: 0;
     height: 0;
     border-left: 5px solid transparent;
@@ -351,3 +390,4 @@ Fbits.Componentes.CalculadoraBTU.init(valores,CategoriasBTU,modalTextoHeader,mod
     color: green;
 }
 </style>
+</html>
