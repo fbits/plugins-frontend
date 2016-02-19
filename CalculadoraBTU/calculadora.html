@@ -14,37 +14,102 @@ var valores = [{
     btuEletronicos: 420,
     btuJanelas: 420
 }];
-var CategoriasBTU = [{
-    deBTU: 0,
-    ateBTU: 30000,
+var CategoriasBTU = [
+ {
+	ArrayDeAte: [{
+			deBTU: 0,
+			ateBTU: 9000
+		}, {
+			deBTU: 9001,
+			ateBTU: 12000
+		}, {
+			deBTU: 12001,
+			ateBTU: 18000
+		}, {
+			deBTU: 18001,
+			ateBTU: 24000
+		}, {
+			deBTU: 24001,
+			ateBTU: 30000
+		}]
+	,
 	titulo: 'Split Hiwall',
 	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
     linkCategoria: 'http://padrao.plataforma.local/motocross',
 	srcImagem:'http://recursos.padrao.plataforma.local/MediaCenter/defaultVideoTN.jpg'
 }, {
-    deBTU: 0,
-    ateBTU: 30000,
+    ArrayDeAte: [{
+			deBTU: 0,
+			ateBTU: 9000
+		}, {
+			deBTU: 9001,
+			ateBTU: 12000
+		}, {
+			deBTU: 12001,
+			ateBTU: 18000
+		}, {
+			deBTU: 18001,
+			ateBTU: 24000
+		}, {
+			deBTU: 24001,
+			ateBTU: 30000
+		}]
+	,
 	titulo: 'Janela',
 	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
     linkCategoria: 'http://padrao.plataforma.local/motocross',
 	srcImagem:'http://recursos.padrao.plataforma.local/MediaCenter/defaultVideoTN.jpg'
-}, {
-    deBTU: 0,
-    ateBTU: 12000,
+} ,{
+    ArrayDeAte: [{
+			deBTU: 0,
+			ateBTU: 9000
+		}]
+	,
+	titulo: 'Compact',
+	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
+    linkCategoria: 'http://padrao.plataforma.local/motocross',
+	srcImagem:'http://recursos.padrao.plataforma.local/MediaCenter/defaultVideoTN.jpg'
+},{
+    ArrayDeAte: [{
+			deBTU: 0,
+			ateBTU: 9000
+		},{
+			deBTU: 9001,
+			ateBTU: 12000
+		}]
+	,
 	titulo: 'Portatil',
 	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
     linkCategoria: 'http://padrao.plataforma.local/motocross',
 	srcImagem:'http://recursos.padrao.plataforma.local/MediaCenter/defaultVideoTN.jpg'
 }, {
-    deBTU: 18001,
-    ateBTU: 80000,
+    ArrayDeAte: [{
+			deBTU: 18001,
+			ateBTU: 24000
+		},{
+			deBTU: 24001,
+			ateBTU: 30000
+		},{
+			deBTU: 30001,
+			ateBTU: 80000
+		}]
+	,
 	titulo: 'Piso Teto',
 	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
     linkCategoria: 'http://padrao.plataforma.local/motocross',
 	srcImagem:'http://recursos.padrao.plataforma.local/MediaCenter/defaultVideoTN.jpg'
 }, {
-    deBTU: 18001,
-    ateBTU: 80000,
+    ArrayDeAte: [{
+			deBTU: 18001,
+			ateBTU: 24000
+		},{
+			deBTU: 24001,
+			ateBTU: 30000
+		},{
+			deBTU: 30001,
+			ateBTU: 80000
+		}]
+	,
 	titulo: 'Cassete',
 	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
     linkCategoria: 'http://padrao.plataforma.local/motocross',
@@ -95,10 +160,33 @@ Fbits.Componentes.CalculadoraBTU = {
         if (valoresexposicaoBTU && valoresCategoriasBTU) {
 			Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU= valoresCategoriasBTU;
             Fbits.Componentes.CalculadoraBTU._valoresexposicaoBTU = valoresexposicaoBTU;
+			Fbits.Componentes.CalculadoraBTU.ordenaCategoriasBtu();
             $('.div-calculadora-btus').append(Fbits.Componentes.CalculadoraBTU.htmlCalculadora());
             Fbits.Componentes.CalculadoraBTU.triggerFuncoes();
         }
     },
+	ordenaCategoriasBtu: function(){
+		function ordenaDeAte(a,b) {
+		  if (a.deBTU < b.deBTU)
+			return -1;
+		  else if (a.deBTU > b.deBTU)
+			return 1;
+		  else 
+			return 0;
+		}
+		for(var i in Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU){
+			Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].ArrayDeAte = Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].ArrayDeAte.sort(ordenaDeAte);
+		}
+		function ordenaCategorias(a,b) {
+		  if (a.ArrayDeAte[a.ArrayDeAte.length-1].ateBTU < b.ArrayDeAte[b.ArrayDeAte.length-1].ateBTU)
+			return -1;
+		  else if (a.deBTU > b.deBTU)
+			return 1;
+		  else 
+			return 0;
+		}
+		Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU = Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU.sort(ordenaCategorias);
+	},
     calcular: function() {
         var obj;
         for (var i in Fbits.Componentes.CalculadoraBTU._valoresexposicaoBTU) {
@@ -149,31 +237,48 @@ Fbits.Componentes.CalculadoraBTU = {
         return '<div class="calculadoraBTU"> <div class="calculadoraBTUHeader"> <div class="calculadoraBTULogo"></div><div class="calculadoraBTUTitulo"></div></div><div class="calculadoraBTUBody"> <div class="item comprimento"> <div class="itemNome">Comprimento</div><div class="itemIcone"></div><div class="itemInput"><input readonly value="1m" type="text" class="itemInput metro"/></div><div class="itemSeta mais"> <div class="itemSetaCima"></div></div><div class="itemSeta menos"> <div class="itemSetaBaixo"></div></div></div><div class="item largura"> <div class="itemNome">Largura</div><div class="itemIcone"></div><div class="itemInput"><input readonly value="1m" type="text" class="itemInput metro"/></div><div class="itemSeta mais"> <div class="itemSetaCima"></div></div><div class="itemSeta menos"> <div class="itemSetaBaixo"></div></div></div><div class="item eletronicos"> <div class="itemNome">Eletrônicos</div><div class="itemIcone"></div><div class="itemInput"><input readonly value="0" type="text" class="itemInput"/></div><div class="itemSeta mais"> <div class="itemSetaCima"></div></div><div class="itemSeta menos"> <div class="itemSetaBaixo"></div></div></div><div class="item pessoas"> <div class="itemNome">Pessoas</div><div class="itemIcone"></div><div class="itemInput"><input readonly value="0" type="text" class="itemInput"/></div><div class="itemSeta mais"> <div class="itemSetaCima"></div></div><div class="itemSeta menos"> <div class="itemSetaBaixo"></div></div></div><div class="item janelas"> <div class="itemNome">Janelas</div><div class="itemIcone"></div><div class="itemInput"><input readonly value="0" type="text" class="itemInput"/></div><div class="itemSeta mais"> <div class="itemSetaCima"></div></div><div class="itemSeta menos"> <div class="itemSetaBaixo"></div></div></div><div class="item exposicao"> <div class="itemNome">Exposição ao Sol</div><div class="itemIcone"></div><div class="itemInput"><input readonly value="Manhã" type="text" class="itemInput dia"/></div><div class="itemSeta mais"> <div class="itemSetaCima"></div></div><div class="itemSeta menos"> <div class="itemSetaBaixo"></div></div></div></div><div class="calculadoraBTUFooter"> <div class="buttonCalcular">Calcular</div></div></div>';
     },
 	htmlModal: function(totalBTU){
-	
+	var maior = 0;
+	var deuMatch = false;
+	for(var i in Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU){
+		if(deuMatch){
+			break;
+		}
+		var arrayDeAte = Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].ArrayDeAte;
+		for(var iDeAte in arrayDeAte){
+			if(arrayDeAte[iDeAte].deBTU <= totalBTU && arrayDeAte[iDeAte].ateBTU >=totalBTU){
+				deuMatch=true;
+				maior= arrayDeAte[iDeAte].ateBTU;
+				break;
+			}
+		}
+	}
 		var htmlModal = '<div class="modalCalculadora">'+
 		'<div class="modalTextoHeader"><span>'+_modalTextoHeader+'</span></div>'+
-		'<div class="modalAreaResultado"><div class="modalResultadoBTU">'+(totalBTU)+' BTUs'+'</div></div>'+
+		'<div class="modalAreaResultado"><div class="modalResultadoBTU">'+(maior)+' BTUs'+'</div></div>'+
 		'<div class="modalInformacao">'+_modalInformacao+'</div>'+
 		'<div class="modalMensagemEscolha">'+_modalMensagemEscolha+'</div>'+
 		'<div class="modalAreaSpot">';
 		for(var i in Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU){
-			if(Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].deBTU <= totalBTU && Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].ateBTU >=totalBTU){
-				htmlModal=htmlModal+'<div class="calculadoraSpot">'+
-					'<a href="'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].linkCategoria+'">'+
-						'<div class="spotImagem">'+
-							'<img src="'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].srcImagem+'" />'+
+			var arrayDeAte = Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].ArrayDeAte;
+			for(var iDeAte in arrayDeAte){
+				if(arrayDeAte[iDeAte].deBTU <= totalBTU && arrayDeAte[iDeAte].ateBTU >=totalBTU){
+					htmlModal=htmlModal+'<div class="calculadoraSpot">'+
+						'<a href="'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].linkCategoria+'">'+
+							'<div class="spotImagem">'+
+								'<img src="'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].srcImagem+'" />'+
+							'</div>'+
+							'<div class="spotTitulo">'+
+								'<span>'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].titulo+'</span>'+
+							'</div>'+
+							'<div class="spotDescricao">'+
+								'<span>'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].descricao+'</span>'+
+							'</div>'+
+						'</a>'+
+						'<div>'+
+							'<a href="'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].linkCategoria+'"><div>Ver produtos</div></a>'+
 						'</div>'+
-						'<div class="spotTitulo">'+
-							'<span>'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].titulo+'</span>'+
-						'</div>'+
-						'<div class="spotDescricao">'+
-							'<span>'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].descricao+'</span>'+
-						'</div>'+
-					'</a>'+
-					'<div>'+
-						'<a href="'+Fbits.Componentes.CalculadoraBTU._valoresCategoriasBTU[i].linkCategoria+'"><div>Ver produtos</div></a>'+
-					'</div>'+
-				'</div>';
+					'</div>';
+				}
 			}
 		}
 		htmlModal=htmlModal+'</div></div>';
@@ -237,37 +342,102 @@ var valores = [{
     btuEletronicos: 420,
     btuJanelas: 420
 }];
-var CategoriasBTU = [{
-    deBTU: 0,
-    ateBTU: 30000,
+var CategoriasBTU = [
+ {
+	ArrayDeAte: [{
+			deBTU: 0,
+			ateBTU: 9000
+		}, {
+			deBTU: 9001,
+			ateBTU: 12000
+		}, {
+			deBTU: 12001,
+			ateBTU: 18000
+		}, {
+			deBTU: 18001,
+			ateBTU: 24000
+		}, {
+			deBTU: 24001,
+			ateBTU: 30000
+		}]
+	,
 	titulo: 'Split Hiwall',
 	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
     linkCategoria: 'http://padrao.plataforma.local/motocross',
 	srcImagem:'http://recursos.padrao.plataforma.local/MediaCenter/defaultVideoTN.jpg'
 }, {
-    deBTU: 0,
-    ateBTU: 30000,
+    ArrayDeAte: [{
+			deBTU: 0,
+			ateBTU: 9000
+		}, {
+			deBTU: 9001,
+			ateBTU: 12000
+		}, {
+			deBTU: 12001,
+			ateBTU: 18000
+		}, {
+			deBTU: 18001,
+			ateBTU: 24000
+		}, {
+			deBTU: 24001,
+			ateBTU: 30000
+		}]
+	,
 	titulo: 'Janela',
 	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
     linkCategoria: 'http://padrao.plataforma.local/motocross',
 	srcImagem:'http://recursos.padrao.plataforma.local/MediaCenter/defaultVideoTN.jpg'
-}, {
-    deBTU: 0,
-    ateBTU: 12000,
+} ,{
+    ArrayDeAte: [{
+			deBTU: 0,
+			ateBTU: 9000
+		}]
+	,
+	titulo: 'Compact',
+	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
+    linkCategoria: 'http://padrao.plataforma.local/motocross',
+	srcImagem:'http://recursos.padrao.plataforma.local/MediaCenter/defaultVideoTN.jpg'
+},{
+    ArrayDeAte: [{
+			deBTU: 0,
+			ateBTU: 9000
+		},{
+			deBTU: 9001,
+			ateBTU: 12000
+		}]
+	,
 	titulo: 'Portatil',
 	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
     linkCategoria: 'http://padrao.plataforma.local/motocross',
 	srcImagem:'http://recursos.padrao.plataforma.local/MediaCenter/defaultVideoTN.jpg'
 }, {
-    deBTU: 18001,
-    ateBTU: 80000,
+    ArrayDeAte: [{
+			deBTU: 18001,
+			ateBTU: 24000
+		},{
+			deBTU: 24001,
+			ateBTU: 30000
+		},{
+			deBTU: 30001,
+			ateBTU: 80000
+		}]
+	,
 	titulo: 'Piso Teto',
 	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
     linkCategoria: 'http://padrao.plataforma.local/motocross',
 	srcImagem:'http://recursos.padrao.plataforma.local/MediaCenter/defaultVideoTN.jpg'
 }, {
-    deBTU: 18001,
-    ateBTU: 80000,
+    ArrayDeAte: [{
+			deBTU: 18001,
+			ateBTU: 24000
+		},{
+			deBTU: 24001,
+			ateBTU: 30000
+		},{
+			deBTU: 30001,
+			ateBTU: 80000
+		}]
+	,
 	titulo: 'Cassete',
 	descricao: 'Teste 1234 Teste 1234 Teste 1234 Teste 1234',
     linkCategoria: 'http://padrao.plataforma.local/motocross',
