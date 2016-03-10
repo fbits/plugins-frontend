@@ -86,7 +86,7 @@ Fbits.Componentes.MenuFiltros = {
 		var query = '';
 		$(".menuFiltroCustomizado .grupoSelect select option:selected").each(function(a,b){
 			if(b.value!="placeholder"){
-				query=  query+'&'+"filtro="+escape(b.value);
+				query=  query+'&'+"filtro="+(b.value);
 			}
 		})
 		if(query!=''){
@@ -105,7 +105,13 @@ $(function () {
 		filtro: 'Categoria',
 		placeholder:'Categoria'
 		},{
-		filtro: 'Marca',
+		filtro: 'Capacidade',
+		placeholder:'Capacidade (BTU/h)'
+		},{
+		filtro: 'Ciclo',
+		placeholder:'Ciclo'
+		},{
+		filtro: 'Marcas',
 		placeholder:'Marca'
 		},{
 		filtro: 'Faixas de Preço',
@@ -115,4 +121,3 @@ $(function () {
 var selectorAppend = ".menu-container";
     Fbits.Componentes.MenuFiltros.init(selectorAppend,filtros,true);
 });
-
