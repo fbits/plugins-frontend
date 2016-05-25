@@ -1,0 +1,95 @@
+<div class="boxAlerta">
+<a class="boxclose" id="boxclose" onclick="javascript: $('.boxAlerta').hide()"></a>
+</div>
+<style>
+.boxAlerta{
+	position: fixed;
+    background: url('http://recursos.lojaslivia.com.br/MediaCenter/LojasLiviaPesJurSP.png');
+    top: 42%;
+    left: 50%;
+    height: 118px;
+    margin-left: -209px;
+    width: 336px;
+    border-radius: 5px;
+    padding: 5px;
+    color: white;
+    font-size: 18px;
+    z-index: 99999;
+	display:none;
+}
+a.boxclose{
+    float:right;
+    margin-top: -16px;
+    margin-right: -16px;
+    cursor:pointer;
+    color: #fff;
+    border: 1px solid #AEAEAE;
+    border-radius: 30px;
+    background: #605F61;
+    font-size: 31px;
+    font-weight: bold;
+    display: inline-block;
+    line-height: 0px;
+    padding: 11px 3px;       
+}
+.boxclose:before {
+    content: "×";
+}
+</style>
+<script>
+function verificaCepSaoPaulo(){
+	var txtCep = $('#txtCEP').val().replace('-','');
+	if(txtCep == undefined || txtCep == ""){
+		txtCep = $('.enderecoRadio:checked').parent().find("span[id^='lblCEP-']").html().replace('-','');
+	}
+	
+	var pessoaJur = $('#cadastroPessoaJuridica').prop('checked');
+	if(pessoaJur == undefined){
+		pessoaJur = (Fbits.Usuario.TipoUsuario== "Jurídica");
+	}
+	var _cep = parseInt(txtCep);
+	if(pessoaJur != undefined && pessoaJur && !(_cep>=01000000 && _cep<= 19999999)){
+		$('#txtCEP').focus();
+		$('#txtCEP').select();
+		$('.boxAlerta').show();
+		return false;
+	}
+	else{
+		$('.boxAlerta').hide();
+		return true;
+	}
+}
+
+$(function () {
+	$(".fechamento form, .minhaconta form").submit(function(event){
+		return verificaCepSaoPaulo();
+	})
+
+	if(Fbits.Usuario != undefined && Fbits.Usuario.TipoUsuario != undefined && Fbits.Usuario.TipoUsuario == "Jurídica"){
+		if($("#btnSalvarNovoEndereco").length > 0){
+			$("#btnSalvarNovoEndereco").removeAttr( "onclick" );
+		}
+		
+		if($('button[id^="btnFinalizarPedidoFinal"]').length > 0){
+			$('button[id^="btnFinalizarPedidoFinal"]').off('click');
+			$('button[id^="btnFinalizarPedidoFinal"]').unbind( "click" );
+		}
+
+		$("#btnSalvarNovoEndereco").click(function(){
+			if(verificaCepSaoPaulo()){
+				salvarEndereco();
+			}
+		});
+		
+		$('button[id^="btnFinalizarPedidoFinal"]').click(function(event){
+			if(verificaCepSaoPaulo()){
+				finalizarPedido();
+			}else{
+				event.preventDefault();
+				event.stopImmediatePropagation();
+				event.stopPropagation();
+			}
+		});	
+	}
+});
+</script>
