@@ -38,17 +38,32 @@ a.boxclose{
 </style>
 <script>
 function verificaCepSaoPaulo(){
-	var txtCep = $('#txtCEP').val().replace('-','');
-	if(txtCep == undefined || txtCep == ""){
+	var txtCep = "";
+	
+	if($("#tipoFreteRetirarNaLoja").length > 0 && $("#tipoFreteRetirarNaLoja").prop("checked")){
+		txtCep = $('[id^="lojaId-"]:checked').parent().find('.fbits-pickupstore-loja-cep').text().replace('-','');
+	}
+	else{
+		txtCep = $('#txtCEP').val().replace('-','');
+	}
+	
+	if((txtCep == undefined || txtCep == "") && $('.enderecoRadio').length > 0){
 		txtCep = $('.enderecoRadio:checked').parent().find("span[id^='lblCEP-']").html().replace('-','');
 	}
 	
-	var pessoaJur = $('#cadastroPessoaJuridica').prop('checked');
-	if(pessoaJur == undefined){
-		pessoaJur = (Fbits.Usuario.TipoUsuario== "Jurídica");
+	if ((txtCep == undefined || txtCep == "" || txtCep == null) && $('#cadastroPessoaJuridica:checked').length > 0) {
+		txtCep = $('.juridica').find("#enderecoInfo_CEP").val().replace('-','');
 	}
+	
+	var pessoaJur = false;
+	if(Fbits.Usuario != undefined && Fbits.Usuario.TipoUsuario != undefined){
+		pessoaJur = (Fbits.Usuario.TipoUsuario == "Jurídica");
+	}else{
+		pessoaJur = $('#cadastroPessoaJuridica').prop('checked');
+	}
+	
 	var _cep = parseInt(txtCep);
-	if(pessoaJur != undefined && pessoaJur && !(_cep>=01000000 && _cep<= 19999999)){
+	if(pessoaJur != undefined && pessoaJur && !(_cep >= 01000000 && _cep <= 19999999)){
 		$('#txtCEP').focus();
 		$('#txtCEP').select();
 		$('.boxAlerta').show();
@@ -59,12 +74,10 @@ function verificaCepSaoPaulo(){
 		return true;
 	}
 }
-
 $(function () {
 	$(".fechamento form, .minhaconta form").submit(function(event){
 		return verificaCepSaoPaulo();
 	})
-
 	if(Fbits.Usuario != undefined && Fbits.Usuario.TipoUsuario != undefined && Fbits.Usuario.TipoUsuario == "Jurídica"){
 		if($("#btnSalvarNovoEndereco").length > 0){
 			$("#btnSalvarNovoEndereco").removeAttr( "onclick" );
@@ -74,22 +87,48 @@ $(function () {
 			$('button[id^="btnFinalizarPedidoFinal"]').off('click');
 			$('button[id^="btnFinalizarPedidoFinal"]').unbind( "click" );
 		}
-
 		$("#btnSalvarNovoEndereco").click(function(){
 			if(verificaCepSaoPaulo()){
 				salvarEndereco();
 			}
 		});
 		
-		$('button[id^="btnFinalizarPedidoFinal"]').click(function(event){
+		$('button[id^="btnFinalizarPedidoFinal"]').on('click',function(event){
+			event.preventDefault();
+			event.stopImmediatePropagation();
+			event.stopPropagation();
+			
 			if(verificaCepSaoPaulo()){
 				finalizarPedido();
-			}else{
-				event.preventDefault();
-				event.stopImmediatePropagation();
-				event.stopPropagation();
 			}
-		});	
+		});
+		
+		/*$('button[id^="btnFinalizarPedidoFinal"]').click(function(event){
+			event.preventDefault();
+			event.stopImmediatePropagation();
+			event.stopPropagation();
+			
+			if(verificaCepSaoPaulo()){
+				finalizarPedido();
+			}
+		});*/
 	}
 });
+
+$(document).ajaxComplete(function( event, xhr, settings ) {
+     if(settings.url.indexOf('/Carrinho/SelectUsuarioContext') >-1) {
+		$('button[id^="btnFinalizarPedidoFinal"]').off('click');
+		$('button[id^="btnFinalizarPedidoFinal"]').unbind( "click" );
+			
+		$('button[id^="btnFinalizarPedidoFinal"]').on('click',function(event){
+			event.preventDefault();
+			event.stopImmediatePropagation();
+			event.stopPropagation();
+			
+			if(verificaCepSaoPaulo()){
+				finalizarPedido();
+			}
+		});
+	 }
+})
 </script>
