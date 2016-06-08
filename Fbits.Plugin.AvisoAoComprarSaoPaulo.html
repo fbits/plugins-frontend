@@ -41,7 +41,7 @@ function verificaCepSaoPaulo(){
 	var txtCep = "";
 	
 	if($("#tipoFreteRetirarNaLoja").length > 0 && $("#tipoFreteRetirarNaLoja").prop("checked")){
-		txtCep = $('[id^="lojaId-"]:checked').parent().find('.fbits-pickupstore-loja-cep').text().replace('-','');
+		return true;
 	}
 	else{
 		txtCep = $('#txtCEP').val().replace('-','');
